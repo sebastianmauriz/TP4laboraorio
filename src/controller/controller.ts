@@ -9,7 +9,7 @@ export const getEmpleados = (request: Request, response: Response) => new Promis
             return;
         }
         console.log('conexion MySql: ', connection.threadId);
-        connection.query('SELECT * FROM empleado', (err, resultado) => {
+        connection.query('SELECT * FROM Empleado', (err, resultado) => {
             if (err) {
                 console.error(err);
             }
@@ -37,9 +37,9 @@ export const getEmpleadoXId = (request: Request, response: Response) => new Prom
 
 });
 
-export const getCrearEmpleado = (request: Request, response: Response) => new Promise((resolve, reject) => {
-    const { nombre, apellido, puesto } = request.body;
-    var valor = [nombre, apellido, puesto];
+export const crearEmpleado = (request: Request, response: Response) => new Promise((resolve, reject) => {
+    const {id, apellido, nombre, dni, sector, fecha, activo } = request.body;
+    var valor = [id,apellido, nombre, dni, sector, fecha, activo];
     conexion.getConnection((err, connection) => {
         if (err) {
             console.error(err);
@@ -47,7 +47,7 @@ export const getCrearEmpleado = (request: Request, response: Response) => new Pr
             return;
         }
         else {
-            let sql: string = 'INSERT INTO persona (nombre, apellido, puesto) VALUES (?,?,?)';
+            let sql: string = 'INSERT INTO empleado (id,apellido, nombre, dni, sector, fecha, activo) VALUES (?,?,?,?,?,?,?)';
             connection.query(sql, valor, (err, resultado) => {
                 if (err) {
                     console.error(err);
@@ -65,8 +65,9 @@ export const getCrearEmpleado = (request: Request, response: Response) => new Pr
 
 
 export const updateEmpleado= (request: Request, response: Response) => new Promise((resolve, reject) => {
-    const { nombre, apellido, puesto } = request.body;
-    var valor = [nombre, apellido, puesto];
+    //const idEmpleado = parseInt(request.params.id);
+    const {id, apellido, nombre, dni, sector, fecha, activo } = request.body;
+    var valor = [apellido, nombre, dni, sector, fecha, activo,id];
     conexion.getConnection((err, connection) => {
         if (err) {
             console.error(err);
@@ -74,14 +75,14 @@ export const updateEmpleado= (request: Request, response: Response) => new Promi
             return;
         }
         else {
-            let sql: string = 'UPDATE empleado  SET nombre=?, apellido=?, puesto =? WHERE id =? ';
+            let sql: string = 'UPDATE empleado  SET  apellido=?, nombre=?, dni=?, sector=?, fecha =?, activo =? WHERE id =? ';
             connection.query(sql, valor, (err, resultado) => {
                 if (err) {
                     console.error(err);
                     response.json({ message: 'ERROR!!, no se puede actualizar El empleado' })
                 }
                 else {
-                    response.json({ message: 'Empleado actualizada correctamente!!' })
+                    response.json({ message: 'Empleado actualizado correctamente!!' })
                 }
             });
         }
